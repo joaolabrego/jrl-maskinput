@@ -362,7 +362,9 @@
         function ValidCpfCnpj(input) {
             let value = input.value.replace(/[^0-9]/g, "")
 
-            if (value.length === 11) {
+            if (value.length === 8)
+                return true
+            else if (value.length === 11) {
                 let digit = value.slice(0, value.length - 2)
 
                 digit = TMask.checkDigit(digit)
