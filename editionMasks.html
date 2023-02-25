@@ -356,14 +356,18 @@
     <input type="text" style="text-align:left;"
         oninput="TMask.formatValueInput(this,['##.###.###','###.###.###-##','##.###.###/####-##'], '', () => ValidCpfCnpj(this))">
     <br><br>
+    <label>INSCRIÇÃO ESTADUAL SP (99999999-9):</label>
+    <input type="text" style="text-align:right;"
+        oninput="TMask.formatValueInput(this, '########-#', '', () => validInscricaoEstadual(this))">
+    <br><br>
     <label>CEP (99999-999):</label>
     <input type="text" style="text-align:left;" oninput="TMask.formatValueInput(this,'*****-***')">
     <br><br>
     <label>VALOR À ESQUERDA (999.999.999.99):</label>
-    <input type="text" style="text-align:left;" oninput="TMask.formatDecimalInput(this)">
+    <input type="text" style="text-align:left;" oninput="TMask.formatDecimalInput(this,10,2)">
     <br><br>
     <label>VALOR À DIREITA (999.999.999.99):</label>
-    <input type="text" style="text-align:right;" oninput="TMask.formatDecimalInput(this)">
+    <input type="text" style="text-align:right;" oninput="TMask.formatDecimalInput(this,8,2)">
     <br><br>
     <label>TELEFONE/CELULAR ((99) 9999-9999 ou (99) 99999-9999):</label>
     <input type="text" style="text-align:left;"
@@ -377,22 +381,34 @@
     <br><br>
     <script>
         function ValidCpfCnpj(input) {
-            let value = input.value.replace(/[^0-9]/g, "")
+            let value = input.value.replace(/[^0-9]/g, ""),
+                digit = value.slice(0, value.length - 2)
 
             if (value.length === 8)
                 return true
             else if (value.length === 11) {
-                let digit = value.slice(0, value.length - 2)
-
                 digit = TMask.checkDigit(digit)
                 digit = TMask.checkDigit(digit)
 
                 return value === digit
             }
             else if (value.length === 14) {
-                let digit = value.slice(0, value.length - 2)
-
                 digit = TMask.checkDigit(digit, undefined, undefined, 2)
+                digit = TMask.checkDigit(digit, undefined, undefined, 2)
+
+                return value === digit
+            }
+            else if (value.length)
+                return false
+
+            return true
+        }
+
+        function validInscricaoEstadual(input) {
+            let value = input.value.replace(/[^0-9]/g, ""),
+                digit = value.slice(0, value.length - 1)
+
+            if (value.length === 9) {
                 digit = TMask.checkDigit(digit, undefined, undefined, 2)
 
                 return value === digit
