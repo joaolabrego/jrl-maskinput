@@ -115,7 +115,8 @@
                                 break
                         }
                         else if (i === indexMonth + 1) {
-                            let day = Number(value.slice(0, 2)),
+                            let indexDay = rawMask.indexOf(this.#dayMask),
+                                day = Number(value.slice(indexDay, indexDay + 2)),
                                 month = value.slice(indexMonth, indexMonth + 2)
 
                             if (day === 31) {
