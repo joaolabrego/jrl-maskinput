@@ -333,14 +333,17 @@
 
                 for (let i = testvalue.length; i > 0; --i) {
                     let product = Number(testvalue[i - 1]) * params.factors[i - 1]
-                    if (fullValue)
-                        while (product > 9)
-                            product -= 9
+                    while (fullValue && product > 9) {
+                        let parcel1 = Math.trunc(product / 10),
+                            parcel2 = product % 10
+
+                        product = parcel1 + parcel2
+                    }
                     sum += product
                 }
-                if (fullValue)
-                    return sum % params.module === 0
                 digit = sum % params.module
+                if (fullValue)
+                    return !digit
                 if (digit && params.subtractDigitFromModule)
                     digit = params.module - digit
                 if (digit > 9)
@@ -370,19 +373,19 @@
     <br><br>
     <label>RAIZ/CPF/CNPJ (99.999.999 ou 999.999.999-99 ou 99.999.999/9999-99):</label>
     <input type="text" style="text-align:left;"
-        oninput="TMask.formatValueInput(this,['##.###.###','###.###.###-##','##.###.###/####-##'], '', () => ValidCpfCnpj(this))">
+        oninput="TMask.formatValueInput(this,['##.###.###','###.###.###-##','##.###.###/####-##'], '', () => validateCpfCnpj(this))">
     <br><br>
     <label>INSCRIÇÃO ESTADUAL SP (99999999-9):</label>
     <input type="text" style="text-align:right;"
-        oninput="TMask.formatValueInput(this, '###.###.###.###', '', () => validStateRegistration(this))">
+        oninput="TMask.formatValueInput(this, '###.###.###.###', '', () => validateStateRegistration(this))">
     <br><br>
     <label>RG SP (99.999.999-A):</label>
     <input type="text" style="text-align:right;"
-        oninput="TMask.formatValueInput(this, '##.###.###-*', 'upper', () => validRG(this))">
+        oninput="TMask.formatValueInput(this, '##.###.###-*', 'upper', () => validateRG(this))">
     <br><br>
-    <label>CARTÃO DE D´BITO/CRÉDITO (9999 9999 9999 9999):</label>
+    <label>CARTÃO DE DÉBITO/CRÉDITO (9999 9999 9999 9999):</label>
     <input type="text" style="text-align:right;"
-        oninput="TMask.formatValueInput(this, '#### #### #### ####', '', () => validCreditCard(this))">
+        oninput="TMask.formatValueInput(this, '#### #### #### ####', '', () => validateCreditCard(this))">
     <br><br>
     <label>CEP (99999-999):</label>
     <input type="text" style="text-align:left;" oninput="TMask.formatValueInput(this,'*****-***')">
@@ -404,7 +407,7 @@
     <input type="text" style="text-align:left;" oninput="TMask.formatValueInput(this,'@@@#@##','lower')">
     <br><br>
     <script>
-        function ValidCpfCnpj(input) {
+        function validateCpfCnpj(input) {
             let value = input.value.replace(/[^0-9]/g, "")
 
             if (value.length === 8)
@@ -431,7 +434,7 @@
             return true
         }
 
-        function validStateRegistration(input) {
+        function validateStateRegistration(input) {
             let value = input.value.replace(/[^0-9]/g, "")
 
             if (value.length === 12)
@@ -448,7 +451,7 @@
             return true
         }
 
-        function validRG(input) {
+        function validateRG(input) {
             let value = input.value.replace(/[^0-9A-Z]/g, "")
 
             if (value.length === 9)
@@ -464,7 +467,7 @@
             return true
         }
 
-        function validCreditCard(input) {
+        function validateCreditCard(input) {
             let value = input.value.replace(/[^0-9]/g, "")
 
             if (value.length === 16)
