@@ -319,18 +319,16 @@
 
             static checkDigit(value, module = 11, factors = [], digitGreaterThanNine = "0", diffModule = false) {
                 let sum = 0,
-                    digit,
-                    testvalue = value.slice(0, factors.length + 1)
+                    testvalue = value.slice(0, factors.length),
+                    digit
 
-                value = value.slice(0, factors.length)
-                for (let i = value.length; i > 0; --i) {
-                    sum += Number(value[i - 1]) * factors[i - 1]
-                }
+                for (let i = testvalue.length; i > 0; --i)
+                    sum += Number(testvalue[i - 1]) * factors[i - 1]
                 digit = sum % module
                 if (digit && diffModule)
                     digit = module - digit
 
-                return `${value}${digit > 9 ? digitGreaterThanNine : digit}` === testvalue
+                return `${testvalue}${digit > 9 ? digitGreaterThanNine : digit}` === value.slice(0, factors.length + 1)
             }
         }
     </script>
