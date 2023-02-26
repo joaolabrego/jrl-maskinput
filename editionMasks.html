@@ -404,10 +404,9 @@
         function validInscricaoEstadual(input) {
             let value = input.value.replace(/[^0-9]/g, "")
 
-            if (value.length === 12) {
+            if (value.length === 12)
                 return TMask.checkDigit(value, 11, [1, 3, 4, 5, 6, 7, 8, 10]) &&
                     TMask.checkDigit(value, 11, [3, 2, 10, 9, 8, 7, 6, 5, 4, 3, 2])
-            }
             else if (value.length)
                 return false
 
@@ -415,11 +414,10 @@
         }
 
         function validRG(input) {
-            let value = input.value.replace(/[^0-9X]/g, "")
+            let value = input.value.replace(/[^0-9A-Z]/g, "")
 
-            if (value.length === 9) {
+            if (value.length === 9)
                 return TMask.checkDigit(value, 11, [2, 3, 4, 5, 6, 7, 8, 9], "X", true)
-            }
             else if (value.length)
                 return false
 
