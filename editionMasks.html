@@ -317,20 +317,18 @@
                 return new Date(year, month - 1, day, hours, minutes, seconds)
             }
 
-            static checkDigit(value, module = 11, startFactor = 9, finalFactor = 1, digitGreaterThanNine = "0") {
-                let increment = startFactor < finalFactor ? 1 : -1
-                let factor = startFactor
-                let sum = 0
+            static checkDigit(value, module = 11, factors = [], digitGreaterThanNine = "0") {
+                let sum = 0,
+                    digit,
+                    testvalue = value.slice(0, factors.length + 1)
 
+                value = value.slice(0, factors.length)
                 for (let i = value.length; i > 0; --i) {
-                    let digit = Number(value[i - 1])
-                    sum += digit * factor
-                    factor = factor === finalFactor ? startFactor : factor + increment
+                    sum += Number(value[i - 1]) * factors[i - 1]
                 }
+                digit = sum % module
 
-                let digit = sum % module
-
-                return `${value}${digit > 9 ? digitGreaterThanNine : digit}`
+                return `${value}${digit > 9 ? digitGreaterThanNine : digit}` === testvalue
             }
         }
     </script>
@@ -358,7 +356,7 @@
     <br><br>
     <label>INSCRIÇÃO ESTADUAL SP (99999999-9):</label>
     <input type="text" style="text-align:right;"
-        oninput="TMask.formatValueInput(this, '########-#', '', () => validInscricaoEstadual(this))">
+        oninput="TMask.formatValueInput(this, '###.###.###.###', '', () => validInscricaoEstadual(this))">
     <br><br>
     <label>CEP (99999-999):</label>
     <input type="text" style="text-align:left;" oninput="TMask.formatValueInput(this,'*****-***')">
@@ -381,23 +379,16 @@
     <br><br>
     <script>
         function ValidCpfCnpj(input) {
-            let value = input.value.replace(/[^0-9]/g, ""),
-                digit = value.slice(0, value.length - 2)
+            let value = input.value.replace(/[^0-9]/g, "")
 
             if (value.length === 8)
                 return true
-            else if (value.length === 11) {
-                digit = TMask.checkDigit(digit)
-                digit = TMask.checkDigit(digit)
-
-                return value === digit
-            }
-            else if (value.length === 14) {
-                digit = TMask.checkDigit(digit, undefined, undefined, 2)
-                digit = TMask.checkDigit(digit, undefined, undefined, 2)
-
-                return value === digit
-            }
+            else if (value.length === 11)
+                return TMask.checkDigit(value, 11, [1, 2, 3, 4, 5, 6, 7, 8, 9]) &&
+                    TMask.checkDigit(value, 11, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+            else if (value.length === 14)
+                return (TMask.checkDigit(value, 11, [6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9])) &&
+                    (TMask.checkDigit(value, 11, [5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9]))
             else if (value.length)
                 return false
 
@@ -405,13 +396,11 @@
         }
 
         function validInscricaoEstadual(input) {
-            let value = input.value.replace(/[^0-9]/g, ""),
-                digit = value.slice(0, value.length - 1)
+            let value = input.value.replace(/[^0-9]/g, "")
 
-            if (value.length === 9) {
-                digit = TMask.checkDigit(digit, undefined, undefined, 2)
-
-                return value === digit
+            if (value.length === 12) {
+                return TMask.checkDigit(value, 11, [1, 3, 4, 5, 6, 7, 8, 10]) &&
+                    TMask.checkDigit(value, 11, [3, 2, 10, 9, 8, 7, 6, 5, 4, 3, 2])
             }
             else if (value.length)
                 return false
