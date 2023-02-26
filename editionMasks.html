@@ -342,7 +342,7 @@
                     return sum % params.module === 0
                 digit = sum % params.module
                 if (digit && params.subtractDigitFromModule)
-                    digit = module - digit
+                    digit = params.module - digit
                 if (digit > 9)
                     digit = params.digitGreaterThanNine
 
